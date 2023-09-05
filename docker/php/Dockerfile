@@ -69,8 +69,7 @@ RUN tar -xf libthai-0.1.29.tar.xz \
     && make \
     && make install
 
-RUN curl https://releases.wikimedia.org/wikidiff2/wikidiff2-1.14.1.tar.gz \
-    --output wikidiff2-1.14.1.tar.gz --silent
+RUN curl -O https://releases.wikimedia.org/wikidiff2/wikidiff2-1.14.1.tar.gz
 RUN tar -xf wikidiff2-1.14.1.tar.gz \
     && cd wikidiff2-1.14.1 \
     && phpize \
