@@ -1,0 +1,9 @@
+{
+	"require": {
+		"mediawiki/semantic-media-wiki": "dev-master",
+		"mediawiki/semantic-result-formats": "dev-master",
+		"mediawiki/semantic-extra-special-properties": "dev-master",
+		"mediawiki/semantic-scribunto": "dev-master",
+		"professional-wiki/id-generator": "~1.0"
+	}
+}
