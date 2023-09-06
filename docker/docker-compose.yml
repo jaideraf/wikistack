@@ -67,6 +67,28 @@ services:
             - MARIADB_IP=${MARIADB_IP}
             - MARIADB_ROOT_USER=${MARIADB_ROOT_USER}
             - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
+    mediawiki_setup:
+        container_name: ${COMPOSE_PROJECT_NAME}-mw-setup
+        image: ${COMPOSE_PROJECT_NAME}-php_img
+        depends_on: 
+            - mariadb_img
+            - php_img
+            - apache_img
+        restart: "no"
+        environment:
+            - PHP_ROOT_DIR=${PHP_ROOT_DIR}
+            - APACHE_IP=${APACHE_IP}
+            - APACHE_EXPOSED_PORT=${APACHE_EXPOSED_PORT}
+            - WEB_USER=${WEB_USER}
+            - WEB_GROUP=${WEB_GROUP}
+            - MARIADB_IP=${MARIADB_IP}
+            - MARIADB_ROOT_USER=${MARIADB_ROOT_USER}
+            - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
+        working_dir: ${PHP_APP_DIR}
+        volumes:
+        - ..:${PHP_APP_DIR}
+        - ../logs/php:${PHP_ROOT_DIR}/logs
+        entrypoint: [ "bash", "-c", "sleep 10 && ./docker/downloadMW.sh"] 
  
 networks:
     public_net:

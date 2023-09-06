@@ -1,8 +1,0 @@
-{
-	"@metadata": {
-		"authors": [
-			"Sveinn í Felli"
-		]
-	},
-	"externaldata-db-invalid-query": "Beiðnin $1 er ógild ( $2 )."
-}
