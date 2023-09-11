@@ -85,10 +85,13 @@ services:
             - MARIADB_ROOT_USER=${MARIADB_ROOT_USER}
             - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
         working_dir: ${PHP_APP_DIR}
+        networks:
+            public_net:
+                ipv4_address: 192.168.0.44
         volumes:
         - ..:${PHP_APP_DIR}
         - ../logs/php:${PHP_ROOT_DIR}/logs
-        entrypoint: [ "bash", "-c", "sleep 10 && ./docker/downloadMW.sh"] 
+        entrypoint: [ "bash", "-c", "sleep 5 && ./downloadMW.sh"] 
  
 networks:
     public_net:
