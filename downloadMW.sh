@@ -22,7 +22,7 @@ if [ ! -d "$MW_DIR" ]; then
     printf "* %s\n" "Downloading common extensions"
     cd ${MW_DIR}/extensions
 
-    for extension in AdminLinks CodeMirror DataTransfer DeleteBatch Description2 DisplayTitle DynamicSidebar ExternalData HeaderTabs HeadScript MobileFrontend MyVariables RegexFunctions TemplateSandbox UrlGetParameters UserFunctions; do
+    for extension in AdminLinks CodeMirror DataTransfer DeleteBatch Description2 DisplayTitle DynamicSidebar ExternalData HeaderTabs HeadScript MobileFrontend MyVariables RegexFunctions UrlGetParameters UserFunctions; do
         if [ ! -d "$extension" ]; then
             git clone https://gerrit.wikimedia.org/r/mediawiki/extensions/$extension.git --branch ${MW_BRANCH}
         fi
@@ -61,11 +61,11 @@ if [ ! -d "$MW_DIR" ]; then
             s/wgEnotifWatchlist = false/wgEnotifWatchlist = true/
             s/wgEnableUploads = false/wgEnableUploads = true/
             s/#\$wgUseImageMagick/\$wgUseImageMagick/
-            s/wgUseInstantCommons = false/wgUseInstantCommons = true/
-            s/wfLoadSkin( 'MonoBook' )/#wfLoadSkin( 'MonoBook' )/' \
+            s/wgUseInstantCommons = false/wgUseInstantCommons = true/' \
             LocalSettings.php
     
     cat << EOF >> LocalSettings.php
+\$wgArticlePath = "/wiki/\$1";
 \$wgNamespacesWithSubpages[NS_MAIN] = true;
 \$wgRawHtml = true;
 \$wgAllowExternalImages = true;
@@ -85,15 +85,15 @@ define("NS_AUTHORITY_TALK", 3001);
 
 \$wgFavicon = "../static-only/cropped-favicon-32x32.png";
 \$wgLogos = [
-'1x' => "../static-only/logo-bu-ufsc-135-135.png",
-'1.5x' => "../static-only/logo-bu-ufsc-202-202.png",
-'2x' => "../static-only/logo-bu-ufsc-270-270.png",
-'icon' => "../static-only/logo-bu-ufsc-50-50.png",
-'wordmark' => [
-'1x' => "../logo-bu-ufsc-wordmark",
-'width' => 135,
-'height' => 20
-]
+    '1x' => "../static-only/logo-bu-ufsc-135-135.png",
+    '1.5x' => "../static-only/logo-bu-ufsc-202-202.png",
+    '2x' => "../static-only/logo-bu-ufsc-270-270.png",
+    'icon' => "../static-only/logo-bu-ufsc-50-50.png",
+    'wordmark' => [
+        '1x' => "../static-only/logo-bu-ufsc-wordmark.png",
+        'width' => 135,
+        'height' => 20
+    ]
 ];
 
 
@@ -150,7 +150,6 @@ wfLoadExtension( 'PageForms' );
 \$wgPageFormsMaxLocalAutocompleteValues = 1;
 \$wgPageFormsAutocompleteOnAllChars = true;
 wfLoadExtension( 'RegexFunctions' );
-wfLoadExtension( 'TemplateSandbox' );
 \$wgTemplateSandboxEditNamespaces[] = 'NS_MODULE';
 wfLoadExtension( 'TemplateStyles' );
 wfLoadExtension( 'UrlGetParameters' );
@@ -164,7 +163,6 @@ wfLoadExtension( 'UserFunctions' );
 EOF
     composer update --no-dev --prefer-source
     php maintenance/update.php
-    php extensions/SemanticMediaWiki/maintenance/updateEntityCollation.php
 
     cat << EOF >> LocalSettings.php
 wfLoadExtension( 'IdGenerator' );

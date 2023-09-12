@@ -9,9 +9,9 @@ if ! [[ -d ../logs/php ]]; then
     mkdir -p ../logs/php
 fi
 
-# if ! [[ -d ../logs/mariadb ]]; then
-#     mkdir -p ../logs/mariadb
-# fi
+if ! [[ -d ../logs/mariadb ]]; then
+    mkdir -p ../logs/mariadb
+fi
 
 if ! [[ -d ../database ]]; then
     mkdir ../database
