@@ -91,7 +91,7 @@ define("NS_AUTHORITY_TALK", 3001);
     '2x' => "../static-only/logo-bu-ufsc-270-270.png",
     'icon' => "../static-only/logo-bu-ufsc-50-50.png",
     'wordmark' => [
-        '1x' => "../static-only/logo-bu-ufsc-wordmark.png",
+        'src' => "../static-only/logo-bu-ufsc-wordmark.png",
         'width' => 135,
         'height' => 20
     ]
