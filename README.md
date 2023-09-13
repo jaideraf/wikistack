@@ -23,9 +23,13 @@ chmod +x build.sh && chmod +x destroy.sh
 
 A instalação do MediaWiki e suas extensões é demorada. Faça outra coisa e **volte depois de 5min**.
 
-A instalação é feita pelo container "wikistack-mw-setup_con". 
+A instalação é feita pelo container "wikistack-mw-setup_con". Para ver o processo de instalação em andamento:
 
-**Espere esse container parar de executar** (ficar inativo) e depois acesse:
+```
+docker logs --tail 1000 -f wikistack-mw-setup_con
+```
+
+**ATENÇÃO: espere esse container parar de executar** (ficar inativo) e depois acesse:
 
 http://localhost:9000/
 
