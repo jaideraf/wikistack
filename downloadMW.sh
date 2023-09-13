@@ -12,14 +12,14 @@ Adminpassword="Adminpassword"
 
 if [ ! -d "$MW_DIR" ]; then
 
-    printf "* %s\n" "Downloading MediaWiki"
+    printf "* %s\n" "Downloading MediaWiki..."
     curl -O "https://releases.wikimedia.org/mediawiki/${MW_MAJOR_VERSION}/mediawiki-${MW_MINOR_VERSION}.tar.gz" \
         --silent
     tar -xf mediawiki-${MW_MINOR_VERSION}.tar.gz
     mv mediawiki-${MW_MINOR_VERSION} w
     rm mediawiki-${MW_MINOR_VERSION}.tar.gz
 
-    printf "* %s\n" "Downloading common extensions"
+    printf "* %s\n" "Downloading common extensions..."
     cd ${MW_DIR}/extensions
 
     for extension in AdminLinks CodeMirror DataTransfer DeleteBatch Description2 DisplayTitle DynamicSidebar ExternalData HeaderTabs HeadScript MobileFrontend MyVariables RegexFunctions UrlGetParameters UserFunctions; do
@@ -38,7 +38,7 @@ if [ ! -d "$MW_DIR" ]; then
     git clone https://github.com/gesinn-it-pub/SemanticDependencyUpdater.git
     cd ..
 
-    printf "* %s\n" "Instaling MediaWiki"
+    printf "* %s\n" "Instaling MediaWiki..."
     cp ../composer.local.json ./composer.local.json
     composer install --no-dev
 
@@ -57,6 +57,7 @@ if [ ! -d "$MW_DIR" ]; then
         "Admin"
 
     sleep 5
+    printf "* %s\n" "Configuring LocalSettings.php..."
     sed -Ei 's/wgEnotifUserTalk = false/wgEnotifUserTalk = true/
             s/wgEnotifWatchlist = false/wgEnotifWatchlist = true/
             s/wgEnableUploads = false/wgEnableUploads = true/
@@ -161,6 +162,7 @@ wfLoadExtension( 'UserFunctions' );
     NS_PROJECT => true
 );
 EOF
+
     composer update --no-dev --prefer-source
     php maintenance/update.php
 
@@ -214,9 +216,10 @@ wfLoadExtension( 'HeaderTabs' );
 wfLoadExtension( 'SemanticDependencyUpdater' );
 \$wgSDUUseJobQueue = false;
 EOF
+    printf "* %s\n" "Updating database tables..."
     php maintenance/update.php
     php extensions/SemanticMediaWiki/maintenance/updateEntityCollation.php
-
+    printf "* %s\n" "Done! You can use MediaWiki now."
 else
     printf "* %s\n" "MediaWiki já presente, saindo do script de instalação."
 fi
