@@ -10,62 +10,68 @@ wgDBuser="root"
 wgDBpassword="root"
 Adminpassword="Adminpassword"
 
-if [ ! -d "$MW_DIR" ]; then
+if [ -d "$MW_DIR" ]; then
 
-    printf "* %s\n" "Downloading MediaWiki..."
-    curl -O "https://releases.wikimedia.org/mediawiki/${MW_MAJOR_VERSION}/mediawiki-${MW_MINOR_VERSION}.tar.gz" \
-        --silent
-    tar -xf mediawiki-${MW_MINOR_VERSION}.tar.gz
-    mv mediawiki-${MW_MINOR_VERSION} w
-    rm mediawiki-${MW_MINOR_VERSION}.tar.gz
+    rm -rf "$MW_DIR"
+    printf "* %s\n" "You already have a MediaWiki directory. This script will delete it and create a new one from now."
 
-    printf "* %s\n" "Downloading common extensions..."
-    cd ${MW_DIR}/extensions || exit
+fi
 
-    for extension in AdminLinks CodeMirror DataTransfer DeleteBatch Description2 DisplayTitle DynamicSidebar ExternalData HeaderTabs HeadScript MobileFrontend MyVariables RegexFunctions UrlGetParameters UserFunctions; do
-        if [ ! -d "$extension" ]; then
-            git clone https://gerrit.wikimedia.org/r/mediawiki/extensions/$extension.git --branch ${MW_BRANCH}
-        fi
-    done
-    git clone https://gerrit.wikimedia.org/r/mediawiki/extensions/PageForms
-    cd PageForms && git checkout 5.6.1 && cd ..
-    git clone https://gerrit.wikimedia.org/r/mediawiki/extensions/TemplateStyles --branch ${MW_BRANCH}
-    cd TemplateStyles && composer install --no-dev && cd ..
-    # git clone https://gerrit.wikimedia.org/r/mediawiki/extensions/SyntaxHighlight_GeSHi --branch ${MW_BRANCH}
-    cd SyntaxHighlight_GeSHi && composer install --no-dev && chmod a+x pygments/pygmentize && cd ..
-    git clone https://gerrit.wikimedia.org/r/mediawiki/extensions/cldr.git
-    cd cldr && git fetch --tags && git checkout 2023.07 && cd ..
-    git clone https://github.com/gesinn-it-pub/SemanticDependencyUpdater.git
-    cd ..
+printf "* %s\n" "Downloading MediaWiki..."
+curl -O "https://releases.wikimedia.org/mediawiki/${MW_MAJOR_VERSION}/mediawiki-${MW_MINOR_VERSION}.tar.gz" \
+    --silent
+tar -xf mediawiki-${MW_MINOR_VERSION}.tar.gz
+mv mediawiki-${MW_MINOR_VERSION} w
+rm mediawiki-${MW_MINOR_VERSION}.tar.gz
 
-    printf "* %s\n" "Instaling MediaWiki..."
-    cp ../composer.local.json ./composer.local.json
-    composer install --no-dev
+printf "* %s\n" "Downloading common extensions..."
+cd ${MW_DIR}/extensions || exit
 
-    php maintenance/install.php \
-        --dbname=wiki \
-        --dbserver=${wgDBserver} \
-        --installdbuser=${wgDBuser} \
-        --installdbpass=${wgDBpassword} \
-        --dbuser=${wgDBuser} \
-        --dbpass=${wgDBpassword} \
-        --server="http://localhost:9000" \
-        --scriptpath=/w \
-        --lang=pt-br \
-        --pass=${Adminpassword} \
-        "${WIKI_NAME}" \
-        "Admin"
+for extension in AdminLinks CodeMirror DataTransfer DeleteBatch Description2 DisplayTitle DynamicSidebar ExternalData HeaderTabs HeadScript MobileFrontend MyVariables RegexFunctions UrlGetParameters UserFunctions; do
+    if [ ! -d "$extension" ]; then
+        git clone https://gerrit.wikimedia.org/r/mediawiki/extensions/$extension.git --branch ${MW_BRANCH}
+    fi
+done
+git clone https://gerrit.wikimedia.org/r/mediawiki/extensions/PageForms
+cd PageForms && git checkout 5.6.1 && cd ..
+git clone https://gerrit.wikimedia.org/r/mediawiki/extensions/TemplateStyles --branch ${MW_BRANCH}
+cd TemplateStyles && composer install --no-dev && cd ..
+# git clone https://gerrit.wikimedia.org/r/mediawiki/extensions/SyntaxHighlight_GeSHi --branch ${MW_BRANCH}
+cd SyntaxHighlight_GeSHi && composer install --no-dev && chmod a+x pygments/pygmentize && cd ..
+git clone https://gerrit.wikimedia.org/r/mediawiki/extensions/cldr.git
+cd cldr && git fetch --tags && git checkout 2023.07 && cd ..
+git clone https://github.com/gesinn-it-pub/SemanticDependencyUpdater.git
+cd ..
 
-    sleep 5
-    printf "* %s\n" "Configuring LocalSettings.php..."
-    sed -Ei "s/wgEnotifUserTalk = false/wgEnotifUserTalk = true/
+printf "* %s\n" "Instaling MediaWiki..."
+
+cp ../composer.local.json ./composer.local.json
+composer install --no-dev
+
+php maintenance/install.php \
+    --dbname=wiki \
+    --dbserver=${wgDBserver} \
+    --installdbuser=${wgDBuser} \
+    --installdbpass=${wgDBpassword} \
+    --dbuser=${wgDBuser} \
+    --dbpass=${wgDBpassword} \
+    --server="http://localhost:9000" \
+    --scriptpath=/w \
+    --lang=pt-br \
+    --pass=${Adminpassword} \
+    "${WIKI_NAME}" \
+    "Admin"
+
+sleep 5
+printf "* %s\n" "Configuring LocalSettings.php..."
+sed -Ei "s/wgEnotifUserTalk = false/wgEnotifUserTalk = true/
             s/wgEnotifWatchlist = false/wgEnotifWatchlist = true/
             s/wgEnableUploads = false/wgEnableUploads = true/
             s/#\$wgUseImageMagick/\$wgUseImageMagick/
             s/wgUseInstantCommons = false/wgUseInstantCommons = true/" \
-            LocalSettings.php
-    
-    cat << EOF >> LocalSettings.php
+    LocalSettings.php
+
+cat <<EOF >>LocalSettings.php
 \$wgArticlePath = "/wiki/\$1";
 \$wgNamespacesWithSubpages[NS_MAIN] = true;
 \$wgRawHtml = true;
@@ -96,7 +102,6 @@ define("NS_AUTHORITY_TALK", 3001);
         'height' => 20
     ]
 ];
-
 
 # Básicas:
 wfLoadExtension( 'VisualEditor' );
@@ -163,12 +168,15 @@ wfLoadExtension( 'UserFunctions' );
 );
 EOF
 
-    printf "* %s\n" "Downloading composer based extensions..."
-    composer update --no-dev --prefer-source
-    printf "* %s\n" "Configuring LocalSettings.php..."
-    php maintenance/update.php
+printf "* %s\n" "Downloading composer based extensions..."
 
-    cat << EOF >> LocalSettings.php
+composer update --no-dev --prefer-source
+
+printf "* %s\n" "Configuring LocalSettings.php..."
+
+php maintenance/update.php
+
+cat <<EOF >>LocalSettings.php
 wfLoadExtension( 'IdGenerator' );
 wfLoadExtension( 'SemanticMediaWiki' );
 enableSemantics( 'bu.wiki.ufsc.br' );
@@ -218,10 +226,10 @@ wfLoadExtension( 'HeaderTabs' );
 wfLoadExtension( 'SemanticDependencyUpdater' );
 \$wgSDUUseJobQueue = false;
 EOF
-    printf "* %s\n" "Updating database tables..."
-    php maintenance/update.php
-    php extensions/SemanticMediaWiki/maintenance/updateEntityCollation.php
-    printf "* %s\n" "Done! You can use MediaWiki now."
-else
-    printf "* %s\n" "MediaWiki já presente, saindo do script de instalação."
-fi
+
+printf "* %s\n" "Updating database tables..."
+
+php maintenance/update.php
+php extensions/SemanticMediaWiki/maintenance/updateEntityCollation.php
+
+printf "* %s\n" "Done! You can use MediaWiki now."
