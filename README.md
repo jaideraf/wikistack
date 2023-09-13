@@ -26,7 +26,7 @@ A instalação do MediaWiki e suas extensões é demorada. Faça outra coisa e *
 A instalação é feita pelo container "wikistack_mw-setup_con". Para ver o processo de instalação em andamento:
 
 ```
-docker logs --tail 1000 -f wikistack-mw-setup_con
+docker logs --tail 1000 -f wikistack_mw-setup_con
 ```
 
 **ATENÇÃO: espere esse container parar de executar** (ficar inativo) e depois acesse:
