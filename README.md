@@ -2,8 +2,7 @@
 
 ## Baixar os arquivos
 ```
-git clone https://github.com/jaideraf/wikistack
-cd wikistack/docker
+git clone https://github.com/jaideraf/wikistack && cd wikistack/docker
 ```
 
 ## Build
@@ -12,12 +11,14 @@ docker compose -f "docker-compose.yml" up -d --build apache_img mariadb_img php_
 ```
 O processo de build pela primeira vez é demorado. Faça outra coisa e **volte depois de 10min**.
 
+## Permissões de execução
+```
+chmod +x build.sh && chmod +x destroy.sh
+```
+
 ## Instalar o MediaWiki
 ```
-chmod +x build.sh
-chmod +x destroy.sh
-./destroy.sh
-./build.sh
+./destroy.sh && ./build.sh
 ```
 
 A instalação do MediaWiki e suas extensões é demorada. Faça outra coisa e **volte depois de 5min**.
