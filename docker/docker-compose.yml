@@ -70,7 +70,7 @@ services:
             - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
     mediawiki_setup:
         container_name: ${COMPOSE_PROJECT_NAME}-mw-setup_con
-        image: ${COMPOSE_PROJECT_NAME}-php_img
+        image: ${COMPOSE_PROJECT_NAME}_php_img
         depends_on: 
             - mariadb_img
             - php_img
