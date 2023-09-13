@@ -20,7 +20,7 @@ if [ ! -d "$MW_DIR" ]; then
     rm mediawiki-${MW_MINOR_VERSION}.tar.gz
 
     printf "* %s\n" "Downloading common extensions..."
-    cd ${MW_DIR}/extensions
+    cd ${MW_DIR}/extensions || exit
 
     for extension in AdminLinks CodeMirror DataTransfer DeleteBatch Description2 DisplayTitle DynamicSidebar ExternalData HeaderTabs HeadScript MobileFrontend MyVariables RegexFunctions UrlGetParameters UserFunctions; do
         if [ ! -d "$extension" ]; then
@@ -58,11 +58,11 @@ if [ ! -d "$MW_DIR" ]; then
 
     sleep 5
     printf "* %s\n" "Configuring LocalSettings.php..."
-    sed -Ei 's/wgEnotifUserTalk = false/wgEnotifUserTalk = true/
+    sed -Ei "s/wgEnotifUserTalk = false/wgEnotifUserTalk = true/
             s/wgEnotifWatchlist = false/wgEnotifWatchlist = true/
             s/wgEnableUploads = false/wgEnableUploads = true/
             s/#\$wgUseImageMagick/\$wgUseImageMagick/
-            s/wgUseInstantCommons = false/wgUseInstantCommons = true/' \
+            s/wgUseInstantCommons = false/wgUseInstantCommons = true/" \
             LocalSettings.php
     
     cat << EOF >> LocalSettings.php
@@ -163,7 +163,9 @@ wfLoadExtension( 'UserFunctions' );
 );
 EOF
 
+    printf "* %s\n" "Downloading composer based extensions..."
     composer update --no-dev --prefer-source
+    printf "* %s\n" "Configuring LocalSettings.php..."
     php maintenance/update.php
 
     cat << EOF >> LocalSettings.php
