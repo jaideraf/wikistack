@@ -2,7 +2,7 @@ FROM php:8.0-fpm
 
 ARG WEB_USER
 ARG WEB_GROUP
-ARG PHP_ROOT_DIRexit
+ARG PHP_ROOT_DIR
 
 # set timezone
 ENV TZ=America/Sao_Paulo
