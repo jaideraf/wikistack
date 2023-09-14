@@ -13,7 +13,7 @@ Adminpassword="Adminpassword"
 if [ -d "$MW_DIR" ]; then
 
     rm -rf "$MW_DIR"
-    printf "* %s\n" "You already have a MediaWiki directory. This script will delete it and create a new one from now."
+    printf "* %s\n" "You already have a MediaWiki directory. This script will delete it and create a new one now."
 
 fi
 
@@ -46,7 +46,6 @@ cd ..
 printf "* %s\n" "Instaling MediaWiki..."
 
 cp ../composer.local.json ./composer.local.json
-composer install --no-dev
 
 php maintenance/install.php \
     --dbname=wiki \
