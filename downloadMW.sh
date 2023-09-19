@@ -102,6 +102,21 @@ define("NS_AUTHORITY_TALK", 3001);
     ]
 ];
 
+############### Incluir aqui configurações de SMTP da UFSC ###############
+
+\$wgSMTP = [
+    'host'      => 'tls://smtp.ufsc.br', // Where the SMTP server is located. If using SSL or TLS, add the prefix "ssl://" or "tls://".
+    'IDHost'    => 'bu.wiki.ufsc.br', // Generally this will be the domain name of your website (aka mywiki.org)
+    'localhost' => 'bu.wiki.ufsc.br', // Same as IDHost above; required by some mail servers
+    'port'      => 587,               // Port to use when connecting to the SMTP server
+    'auth'      => true,              // Should we use SMTP authentication (true or false)
+    'username'  => 'my_user_name',    // Username to use for SMTP authentication (if being used)
+    'password'  => 'my_password'      // Password to use for SMTP authentication (if being used)
+];
+
+##########################################################################
+
+
 # Básicas:
 wfLoadExtension( 'VisualEditor' );
 \$wgVisualEditorAvailableNamespaces = [
