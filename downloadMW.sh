@@ -104,6 +104,9 @@ define("NS_AUTHORITY_TALK", 3001);
 
 # Básicas:
 wfLoadExtension( 'VisualEditor' );
+\$wgVisualEditorAvailableNamespaces = [
+    'Project' => true
+];
 wfLoadExtension( 'WikiEditor' );
 \$wgHiddenPrefs[] = 'usebetatoolbar';
 
