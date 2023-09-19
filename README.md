@@ -1,5 +1,7 @@
 # Ambiente de MediaWiki (Wikistack)
 
+O ambiente inclui Apache 2.4, PHP-FPM 8.0, MariaDB 11.1 e MediaWiki 1.39.4.
+
 ## Baixar os arquivos
 ```
 git clone https://github.com/jaideraf/wikistack && cd wikistack/docker
@@ -36,3 +38,101 @@ http://localhost:9000/
 Veja que o ambiente e as extenções foram instaladas corretamente em: 
 
 http://localhost:9000/wiki/Especial:Versão
+
+## Detalhes
+
+Extensões do PHP incluídas:
+```
+apcu
+calendar
+Core
+ctype
+curl
+date
+dom
+exif
+fileinfo
+filter
+ftp
+gd
+hash
+iconv
+imagick
+intl
+json
+ldap
+libxml
+luasandbox
+mbstring
+mysqli
+mysqlnd
+openssl
+pcre
+PDO
+pdo_sqlite
+Phar
+posix
+readline
+Reflection
+session
+SimpleXML
+sockets
+sodium
+SPL
+sqlite3
+standard
+tokenizer
+wikidiff2
+xml
+xmlreader
+xmlwriter
+Zend OPcache
+zlib
+```
+Extensões do MediaWiki incluídas:
+```
+AdminLinks
+CategoryTree
+Cite
+CiteThisPage
+cldr
+CodeEditor
+CodeMirror
+DataTransfer
+DeleteBatch
+Description2
+DisplayTitle
+DynamicSidebar
+ExternalData
+HeaderTabs
+HeadScript
+IdGenerator
+InputBox
+Interwiki
+MobileFrontend
+MultimediaViewer
+MyVariables
+Nuke
+PageForms
+PageImages
+ParserFunctions
+PdfHandler
+Poem
+RegexFunctions
+ReplaceText
+Scribunto
+SecureLinkFixer
+SemanticDependencyUpdater
+SemanticExtraSpecialProperties
+SemanticMediaWiki
+SemanticResultFormats
+SemanticScribunto
+SpamBlacklist
+SyntaxHighlight
+TemplateData
+TemplateStyles
+UrlGetParameters
+UserFunctions
+VisualEditor
+WikiEditor
+```
