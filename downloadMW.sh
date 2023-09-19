@@ -1,30 +1,28 @@
 #!/usr/bin/env bash
 
-MW_DIR="w"
-MW_MAJOR_VERSION="1.39"
+MW_DIR="w"              # see: https://www.mediawiki.org/wiki/Manual:Short_URL
+MW_MAJOR_VERSION="1.39" # current LTS
 MW_MINOR_VERSION="1.39.4"
 MW_BRANCH="REL1_39"
 WIKI_NAME="BU"
-wgDBserver="$MARIADB_IP"
-wgDBuser="root"
-wgDBpassword="root"
-Adminpassword="Adminpassword"
+ADMINPASSWORD="Adminpassword"                  # change later
+SERVER="http://localhost:$APACHE_EXPOSED_PORT" # change later (https://bu.wiki.ufsc.br)
 
 if [ -d "$MW_DIR" ]; then
 
+    printf "*** %s\n" "You already have a MediaWiki directory. This script will delete it and create a new one now."
     rm -rf "$MW_DIR"
-    printf "* %s\n" "You already have a MediaWiki directory. This script will delete it and create a new one now."
 
 fi
 
-printf "* %s\n" "Downloading MediaWiki..."
+printf "*** %s\n" "Downloading MediaWiki..."
 curl -O "https://releases.wikimedia.org/mediawiki/${MW_MAJOR_VERSION}/mediawiki-${MW_MINOR_VERSION}.tar.gz" \
     --silent
 tar -xf mediawiki-${MW_MINOR_VERSION}.tar.gz
 mv mediawiki-${MW_MINOR_VERSION} w
 rm mediawiki-${MW_MINOR_VERSION}.tar.gz
 
-printf "* %s\n" "Downloading common extensions..."
+printf "*** %s\n" "Downloading common extensions..."
 cd ${MW_DIR}/extensions || exit
 
 for extension in AdminLinks CodeMirror DataTransfer DeleteBatch Description2 DisplayTitle DynamicSidebar ExternalData HeaderTabs HeadScript MobileFrontend MyVariables RegexFunctions UrlGetParameters UserFunctions; do
@@ -36,41 +34,42 @@ git clone https://gerrit.wikimedia.org/r/mediawiki/extensions/PageForms
 cd PageForms && git checkout 5.6.1 && cd ..
 git clone https://gerrit.wikimedia.org/r/mediawiki/extensions/TemplateStyles --branch ${MW_BRANCH}
 cd TemplateStyles && composer install --no-dev && cd ..
-# git clone https://gerrit.wikimedia.org/r/mediawiki/extensions/SyntaxHighlight_GeSHi --branch ${MW_BRANCH}
+# git clone https://gerrit.wikimedia.org/r/mediawiki/extensions/SyntaxHighlight_GeSHi --branch ${MW_BRANCH} # already there
 cd SyntaxHighlight_GeSHi && composer install --no-dev && chmod a+x pygments/pygmentize && cd ..
 git clone https://gerrit.wikimedia.org/r/mediawiki/extensions/cldr.git
 cd cldr && git fetch --tags && git checkout 2023.07 && cd ..
 git clone https://github.com/gesinn-it-pub/SemanticDependencyUpdater.git
 cd ..
 
-printf "* %s\n" "Instaling MediaWiki..."
+printf "*** %s\n" "Instaling MediaWiki..."
 
 cp ../composer.local.json ./composer.local.json
 
 php maintenance/install.php \
-    --dbname=wiki \
-    --dbserver=${wgDBserver} \
-    --installdbuser=${wgDBuser} \
-    --installdbpass=${wgDBpassword} \
-    --dbuser=${wgDBuser} \
-    --dbpass=${wgDBpassword} \
-    --server="http://localhost:9000" \
-    --scriptpath=/w \
+    --dbname=bu_wiki \
+    --dbserver="$MARIADB_IP" \
+    --installdbuser="$MARIADB_ROOT_USER" \
+    --installdbpass="$MARIADB_ROOT_PASSWORD" \
+    --dbuser="$MARIADB_ROOT_USER" \
+    --dbpass="$MARIADB_ROOT_PASSWORD" \
+    --server="$SERVER" \
+    --scriptpath=/"$MW_DIR" \
     --lang=pt-br \
-    --pass=${Adminpassword} \
+    --pass=${ADMINPASSWORD} \
     "${WIKI_NAME}" \
     "Admin" || exit
 
-sleep 5
-printf "* %s\n" "Configuring LocalSettings.php..."
+sleep 3
+
+printf "*** %s\n" "Configuring LocalSettings.php..."
 sed -Ei "s/wgEnotifUserTalk = false/wgEnotifUserTalk = true/
-            s/wgEnotifWatchlist = false/wgEnotifWatchlist = true/
-            s/wgEnableUploads = false/wgEnableUploads = true/
-            s/#\$wgUseImageMagick/\$wgUseImageMagick/
-            s/wgUseInstantCommons = false/wgUseInstantCommons = true/" \
+         s/wgEnotifWatchlist = false/wgEnotifWatchlist = true/
+         s/wgEnableUploads = false/wgEnableUploads = true/
+         s/#\$wgUseImageMagick/\$wgUseImageMagick/
+         s/wgUseInstantCommons = false/wgUseInstantCommons = true/" \
     LocalSettings.php
 
-cat <<EOF >>LocalSettings.php
+cat <<EOF >> LocalSettings.php
 \$wgArticlePath = "/wiki/\$1";
 \$wgNamespacesWithSubpages[NS_MAIN] = true;
 \$wgRawHtml = true;
@@ -117,7 +116,7 @@ define("NS_AUTHORITY_TALK", 3001);
 ##########################################################################
 
 
-# Básicas:
+# Loading das extensões básicas:
 wfLoadExtension( 'VisualEditor' );
 \$wgVisualEditorAvailableNamespaces = [
     'Project' => true
@@ -125,6 +124,7 @@ wfLoadExtension( 'VisualEditor' );
 wfLoadExtension( 'WikiEditor' );
 \$wgHiddenPrefs[] = 'usebetatoolbar';
 
+# Loading das extensões complementares (padrões):
 wfLoadExtension( 'CategoryTree' );
 wfLoadExtension( 'Cite' );
 wfLoadExtension( 'CiteThisPage' );
@@ -151,7 +151,7 @@ wfLoadExtension( 'TemplateData' );
 # Skin (MinervaNeue será usado com MobileFrontend)
 wfLoadSkin( 'MinervaNeue' );
 
-
+# Loading das extensões complementares (adicionais):
 wfLoadExtension( 'AdminLinks' );
 wfLoadExtension( 'cldr' );
 wfLoadExtension( 'CodeMirror' );
@@ -185,15 +185,14 @@ wfLoadExtension( 'UserFunctions' );
 );
 EOF
 
-printf "* %s\n" "Downloading composer based extensions..."
-
+printf "*** %s\n" "Downloading composer based extensions..."
 composer update --no-dev --prefer-source
 
-printf "* %s\n" "Configuring LocalSettings.php..."
-
+printf "*** %s\n" "Configuring LocalSettings.php..."
 php maintenance/update.php
 
-cat <<EOF >>LocalSettings.php
+cat <<EOF >> LocalSettings.php
+# Loading das extensões complementares (composer based):
 wfLoadExtension( 'IdGenerator' );
 wfLoadExtension( 'SemanticMediaWiki' );
 enableSemantics( 'bu.wiki.ufsc.br' );
@@ -244,19 +243,19 @@ wfLoadExtension( 'SemanticDependencyUpdater' );
 \$wgSDUUseJobQueue = false;
 EOF
 
-printf "* %s\n" "Updating database tables..."
+printf "*** %s\n" "Updating database tables..."
 
 php maintenance/update.php
 php extensions/SemanticMediaWiki/maintenance/updateEntityCollation.php
 
-printf "* %s\n" "Importing pages..."
+printf "*** %s\n" "Importing pages..."
 
-php maintenance/importDump.php < ../Wikincat-20230919175926.xml
+php maintenance/importDump.php <../Wikincat-20230919175926.xml
 
-printf "* %s\n" "Finalizing setup..."
+printf "*** %s\n" "Finalizing setup..."
 
 php maintenance/rebuildrecentchanges.php
 php maintenance/initSiteStats.php --update
 php maintenance/runJobs.php --maxjobs 1000
 
-printf "* %s\n" "Done! You can use MediaWiki now."
+printf "*** %s\n" "Done! You can use MediaWiki now."
