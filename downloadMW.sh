@@ -259,3 +259,4 @@ php maintenance/initSiteStats.php --update
 php maintenance/runJobs.php --maxjobs 1000
 
 printf "*** %s\n" "Done! You can use MediaWiki now."
+exit 0
