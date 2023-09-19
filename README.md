@@ -2,18 +2,18 @@
 
 O ambiente inclui Apache 2.4, PHP-FPM 8.0, MariaDB 11.1 e MediaWiki 1.39.4.
 
-## Baixar os arquivos
+## Baixar os arquivos e entre no diretório docker:
 ```
 git clone https://github.com/jaideraf/wikistack && cd wikistack/docker
 ```
 
-## Build
+## Faça primeiramente o build do PHP
 ```
-docker compose -f "docker-compose.yml" up -d --build apache_img mariadb_img php_img
+docker compose -f "docker-compose.yml" up -d --build php_img
 ```
 O processo de build pela primeira vez é demorado. Faça outra coisa e **volte depois de 10min**.
 
-## Permissões de execução
+## Dê permissões de execução nos scripts, caso não tenham
 ```
 chmod +x build.sh && chmod +x destroy.sh
 ```
@@ -23,7 +23,7 @@ chmod +x build.sh && chmod +x destroy.sh
 ./destroy.sh && ./build.sh
 ```
 
-A instalação do MediaWiki e suas extensões é demorada. Faça outra coisa e **volte depois de 5min**.
+A instalação do MediaWiki e suas extensões é demorada. Faça outra coisa e **volte depois de 10min**.
 
 A instalação é feita pelo container "wikistack_mw-setup_con". Para ver o processo de instalação em andamento:
 
