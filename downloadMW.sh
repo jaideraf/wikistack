@@ -5,7 +5,7 @@ MW_MAJOR_VERSION="1.39"
 MW_MINOR_VERSION="1.39.4"
 MW_BRANCH="REL1_39"
 WIKI_NAME="BU"
-wgDBserver="192.168.0.22"
+wgDBserver="$MARIADB_IP"
 wgDBuser="root"
 wgDBpassword="root"
 Adminpassword="Adminpassword"
@@ -59,7 +59,7 @@ php maintenance/install.php \
     --lang=pt-br \
     --pass=${Adminpassword} \
     "${WIKI_NAME}" \
-    "Admin"
+    "Admin" || exit
 
 sleep 5
 printf "* %s\n" "Configuring LocalSettings.php..."
@@ -230,5 +230,15 @@ printf "* %s\n" "Updating database tables..."
 
 php maintenance/update.php
 php extensions/SemanticMediaWiki/maintenance/updateEntityCollation.php
+
+printf "* %s\n" "Importing pages..."
+
+php maintenance/importDump.php < ../Wikincat-20230919175926.xml
+
+printf "* %s\n" "Finalizing setup..."
+
+php maintenance/rebuildrecentchanges.php
+php maintenance/initSiteStats.php --update
+php maintenance/runJobs.php --maxjobs 1000
 
 printf "* %s\n" "Done! You can use MediaWiki now."
