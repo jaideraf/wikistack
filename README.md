@@ -7,9 +7,9 @@ O ambiente inclui Apache 2.4, PHP-FPM 8.0, MariaDB 11.1 e MediaWiki 1.39.4.
 git clone https://github.com/jaideraf/wikistack && cd wikistack/docker
 ```
 
-## Faça primeiramente o build do PHP
+## Faça primeiramente o build da imagem do PHP
 ```
-docker compose -f "docker-compose.yml" up -d --build php_img
+docker compose -f "docker-compose.yml" up -d --build php_img --no-deps
 ```
 O processo de build pela primeira vez é demorado. Faça outra coisa e **volte depois de 10min**.
 
