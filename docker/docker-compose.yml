@@ -92,7 +92,7 @@ services:
         volumes:
         - ..:${PHP_APP_DIR}
         - ../logs/php:${PHP_ROOT_DIR}/logs
-        entrypoint: [ "bash", "-c", "sleep 5 && ./downloadMW.sh"] 
+        entrypoint: [ "bash", "-c", "sleep 5 && ./downloadAndInstallMediaWiki.sh"] 
  
 networks:
     public_net:
