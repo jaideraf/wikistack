@@ -25,7 +25,7 @@ chmod +x build.sh && chmod +x destroy.sh
 
 A instalação do MediaWiki e suas extensões é demorada. Faça outra coisa e **volte depois de 10min**.
 
-* Se nesse ponto acontecer um erro referente ao Docker não encontrar a imagem "wikistack-php_img", significa que você está usando uma versão antiga do compose. Ver https://stackoverflow.com/questions/69464001.
+* Se nesse ponto acontecer um erro referente ao Docker não encontrar a imagem "wikistack-php_img", significa que você está usando uma versão antiga do compose. Ver https://stackoverflow.com/questions/69464001 e https://docs.docker.com/compose/migrate/#service-container-names.
 
 A instalação é feita pelo container "wikistack_mw-setup_con". Para ver o processo de instalação em andamento:
 
