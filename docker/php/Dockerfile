@@ -56,21 +56,21 @@ RUN pecl install luasandbox; \
 
 WORKDIR /opt
 
-COPY libdatrie-0.2.13.tar.xz .
+RUN curl -OL https://github.com/tlwg/libdatrie/releases/download/v0.2.13/libdatrie-0.2.13.tar.xz
 RUN tar -xf libdatrie-0.2.13.tar.xz \
     && cd libdatrie-0.2.13 \
     && ./configure \
     && make \
     && make install
 
-COPY libthai-0.1.29.tar.xz .
+RUN curl -OL https://github.com/tlwg/libthai/releases/download/v0.1.29/libthai-0.1.29.tar.xz
 RUN tar -xf libthai-0.1.29.tar.xz \
     && cd libthai-0.1.29 \
     && ./configure \
     && make \
     && make install
 
-RUN curl -O https://releases.wikimedia.org/wikidiff2/wikidiff2-1.14.1.tar.gz
+RUN curl -OL https://releases.wikimedia.org/wikidiff2/wikidiff2-1.14.1.tar.gz
 RUN tar -xf wikidiff2-1.14.1.tar.gz \
     && cd wikidiff2-1.14.1 \
     && phpize \

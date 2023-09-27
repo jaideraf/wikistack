@@ -250,7 +250,7 @@ php extensions/SemanticMediaWiki/maintenance/updateEntityCollation.php
 
 printf "*** %s\n" "Importing pages..."
 
-php maintenance/importDump.php <../Wikincat-20230919175926.xml
+php maintenance/importDump.php < ../Wikincat-20230919175926.xml
 
 printf "*** %s\n" "Finalizing setup..."
 

@@ -2,23 +2,23 @@
 
 O ambiente inclui Apache 2.4, PHP-FPM 8.0, MariaDB 11.1 e MediaWiki 1.39.4.
 
-## Baixar os arquivos e entre no diretório docker:
+### Baixar os arquivos e entre no diretório docker:
 ```
 git clone https://github.com/jaideraf/wikistack && cd wikistack/docker
 ```
 
-## Faça primeiramente o build da imagem do PHP
+### Faça primeiramente o build da imagem do PHP
 ```
 docker compose -f "docker-compose.yml" up -d --build php_img --no-deps
 ```
 O processo de build pela primeira vez é demorado. Faça outra coisa e **volte depois de 10min**.
 
-## Dê permissões de execução nos scripts, caso não tenham
+### Dê permissões de execução nos scripts, caso não tenham
 ```
 chmod +x build.sh && chmod +x destroy.sh
 ```
 
-## Instalar o MediaWiki
+### Instalar o MediaWiki
 ```
 ./destroy.sh && ./build.sh
 ```
@@ -41,7 +41,7 @@ Veja que o ambiente e as extenções foram instaladas corretamente em:
 
 http://localhost:9000/wiki/Especial:Versão
 
-## Detalhes
+### Detalhes
 
 Extensões do PHP incluídas:
 ```
