@@ -1,40 +1,40 @@
 #!/usr/bin/env bash
 
-MW_DIR="w"              # see: https://www.mediawiki.org/wiki/Manual:Short_URL
-MW_MAJOR_VERSION="1.39" # current LTS
-MW_MINOR_VERSION="1.39.4"
-MW_BRANCH="REL1_39"
+MEDIAWIKI_DIR="w"              # see: https://www.mediawiki.org/wiki/Manual:Short_URL
+MEDIAWIKI_MAJOR_VERSION="1.39" # current LTS
+MEDIAWIKI_VERSION="1.39.4"
+MEDIAWIKI_BRANCH="REL1_39"
 WIKI_NAME="BU"
 ADMINPASSWORD="Adminpassword"                  # change later
 SERVER="http://localhost:$APACHE_EXPOSED_PORT" # change later (https://bu.wiki.ufsc.br)
 
-if [ -d "$MW_DIR" ]; then
+if [ -d "$MEDIAWIKI_DIR" ]; then
 
     printf "*** %s\n" "You already have a MediaWiki directory. This script will delete it and create a new one now."
-    rm -rf "$MW_DIR"
+    rm -rf "$MEDIAWIKI_DIR"
 
 fi
 
 printf "*** %s\n" "Downloading MediaWiki..."
-curl -O "https://releases.wikimedia.org/mediawiki/${MW_MAJOR_VERSION}/mediawiki-${MW_MINOR_VERSION}.tar.gz" \
+curl -O "https://releases.wikimedia.org/mediawiki/${MEDIAWIKI_MAJOR_VERSION}/mediawiki-${MEDIAWIKI_VERSION}.tar.gz" \
     --silent
-tar -xf mediawiki-${MW_MINOR_VERSION}.tar.gz
-mv mediawiki-${MW_MINOR_VERSION} w
-rm mediawiki-${MW_MINOR_VERSION}.tar.gz
+tar -xf mediawiki-${MEDIAWIKI_VERSION}.tar.gz
+mv mediawiki-${MEDIAWIKI_VERSION} w
+rm mediawiki-${MEDIAWIKI_VERSION}.tar.gz
 
 printf "*** %s\n" "Downloading common extensions..."
-cd ${MW_DIR}/extensions || exit
+cd ${MEDIAWIKI_DIR}/extensions || exit
 
 for extension in AdminLinks CodeMirror DataTransfer DeleteBatch Description2 DisplayTitle DynamicSidebar ExternalData HeaderTabs HeadScript MobileFrontend MyVariables RegexFunctions UrlGetParameters UserFunctions; do
     if [ ! -d "$extension" ]; then
-        git clone https://gerrit.wikimedia.org/r/mediawiki/extensions/$extension.git --branch ${MW_BRANCH}
+        git clone https://gerrit.wikimedia.org/r/mediawiki/extensions/$extension.git --branch ${MEDIAWIKI_BRANCH}
     fi
 done
 git clone https://gerrit.wikimedia.org/r/mediawiki/extensions/PageForms
 cd PageForms && git checkout 5.6.1 && cd ..
-git clone https://gerrit.wikimedia.org/r/mediawiki/extensions/TemplateStyles --branch ${MW_BRANCH}
+git clone https://gerrit.wikimedia.org/r/mediawiki/extensions/TemplateStyles --branch ${MEDIAWIKI_BRANCH}
 cd TemplateStyles && composer install --no-dev && cd ..
-# git clone https://gerrit.wikimedia.org/r/mediawiki/extensions/SyntaxHighlight_GeSHi --branch ${MW_BRANCH} # already there
+# git clone https://gerrit.wikimedia.org/r/mediawiki/extensions/SyntaxHighlight_GeSHi --branch ${MEDIAWIKI_BRANCH} # already there
 cd SyntaxHighlight_GeSHi && composer install --no-dev && chmod a+x pygments/pygmentize && cd ..
 git clone https://gerrit.wikimedia.org/r/mediawiki/extensions/cldr.git
 cd cldr && git fetch --tags && git checkout 2023.07 && cd ..
@@ -53,7 +53,7 @@ php maintenance/install.php \
     --dbuser="$MARIADB_ROOT_USER" \
     --dbpass="$MARIADB_ROOT_PASSWORD" \
     --server="$SERVER" \
-    --scriptpath=/"$MW_DIR" \
+    --scriptpath=/"$MEDIAWIKI_DIR" \
     --lang=pt-br \
     --pass=${ADMINPASSWORD} \
     "${WIKI_NAME}" \
