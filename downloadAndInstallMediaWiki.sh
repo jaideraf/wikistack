@@ -2,7 +2,7 @@
 
 MEDIAWIKI_DIR="w"              # see: https://www.mediawiki.org/wiki/Manual:Short_URL
 MEDIAWIKI_MAJOR_VERSION="1.39" # current LTS
-MEDIAWIKI_VERSION="1.39.4"
+MEDIAWIKI_VERSION="1.39.5"
 MEDIAWIKI_BRANCH="REL1_39"
 WIKI_NAME="BU"
 ADMINPASSWORD="Adminpassword"                  # change later
