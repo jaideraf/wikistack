@@ -2,7 +2,7 @@
 
 MEDIAWIKI_DIR="w"              # see: https://www.mediawiki.org/wiki/Manual:Short_URL
 MEDIAWIKI_MAJOR_VERSION="1.39" # current LTS
-MEDIAWIKI_VERSION="1.39.5"
+MEDIAWIKI_VERSION="1.39.6"
 MEDIAWIKI_BRANCH="REL1_39"
 WIKI_NAME="BU"
 ADMINPASSWORD="Adminpassword"                  # change later
@@ -16,8 +16,7 @@ if [ -d "$MEDIAWIKI_DIR" ]; then
 fi
 
 printf "*** %s\n" "Downloading MediaWiki..."
-curl -O "https://releases.wikimedia.org/mediawiki/${MEDIAWIKI_MAJOR_VERSION}/mediawiki-${MEDIAWIKI_VERSION}.tar.gz" \
-    --silent
+curl -O "https://releases.wikimedia.org/mediawiki/${MEDIAWIKI_MAJOR_VERSION}/mediawiki-${MEDIAWIKI_VERSION}.tar.gz"
 tar -xf mediawiki-${MEDIAWIKI_VERSION}.tar.gz
 mv mediawiki-${MEDIAWIKI_VERSION} w
 rm mediawiki-${MEDIAWIKI_VERSION}.tar.gz
